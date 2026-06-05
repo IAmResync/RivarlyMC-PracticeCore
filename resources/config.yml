@@ -1,0 +1,59 @@
+# ===========================================
+#  RivallyMC - PracticeCore Configuration
+# ===========================================
+
+database:
+  # Typ bazy danych: "sqlite" (lokalna plikowa) lub "mysql" (zdalna sieciowa)
+  type: "sqlite"
+
+  sqlite:
+    file: "rivarly.db"
+
+  mysql:
+    host: "127.0.0.1"
+    port: 3306
+    user: "root"
+    password: "your_secure_password"
+    schema: "rivarly_practice"
+
+  worker-limit: 2
+
+redis:
+  enabled: false
+  host: "127.0.0.1"
+  port: 6379
+  password: ""
+  database: 0
+  leaderboard-cache-ttl: 300
+
+http:
+  webhooks:
+    enabled: false
+    api-url: ""
+    secret-token:
+
+  discord:
+    enabled: false
+    webhook-url: ""
+
+matchmaking:
+  tick-rate: 1
+  initial-range: 50
+  range-expansion-per-trick: 10
+
+combat:
+  default-attack-cooldown: 10
+
+match:
+  countdown-seconds: 5
+  grace-period-seconds: 3
+  duration-seconds: 180
+
+knockback:
+  base-horizontal: 0.42
+  base-vertical: 0.38
+
+anticheat:
+  max-reach: 3.2
+  reach-buffer: 0.5
+  max-cps: 20

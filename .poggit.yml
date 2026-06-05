@@ -1,0 +1,10 @@
+--- # Poggit-CI Manifest
+build-by-default: true
+branches:
+  - main
+projects:
+  RivarlyMC-PracticeCore:
+    path: ""
+    libs:
+      - src: poggit/libasynql/libasynql
+        version: ^4.2.3

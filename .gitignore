@@ -1,0 +1,10 @@
+/vendor/
+.idea/
+.vscode/
+*.phar
+/bin/
+composer.lock
+/website/
+.env
+.phpunit.result.cache
+/pocketmine/

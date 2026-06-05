@@ -1,0 +1,15 @@
+{
+    "name": "rivarly/plugin",
+    "description": "Professional practice plugin for PocketMine-MP",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1",
+        "poggit/libasynql": "^4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    }
+}

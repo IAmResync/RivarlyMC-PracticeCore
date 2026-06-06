@@ -24,7 +24,7 @@ final class RematchCommand extends Command {
             description:  'Accept or decline a rematch offer.',
             usageMessage: '/rematch | /rematch deny',
         );
-        $this->setPermission('command.default');
+        $this->setPermission('rivarly.play');
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): void {

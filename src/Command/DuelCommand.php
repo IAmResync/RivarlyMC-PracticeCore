@@ -30,7 +30,7 @@ final class DuelCommand extends Command {
             usageMessage: '/duel <gracz> <tryb> | /duel accept|deny <gracz>',
             aliases:      ['pojedynkuj', 'd']
         );
-        $this->setPermission('command.default');
+        $this->setPermission('rivarly.play');
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): void {

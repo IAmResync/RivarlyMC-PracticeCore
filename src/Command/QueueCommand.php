@@ -29,7 +29,7 @@ final class QueueCommand extends Command {
             usageMessage: '/queue <tryb> | /queue leave',
             aliases:     ['q', 'arena']
         );
-        $this->setPermission('command.default');
+        $this->setPermission('rivarly.play');
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): void {

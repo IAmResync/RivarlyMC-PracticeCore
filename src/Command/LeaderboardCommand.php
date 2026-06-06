@@ -24,7 +24,7 @@ final class LeaderboardCommand extends Command {
             usageMessage: '/leaderboard [tryb]',
             aliases:      ['top', 'topka', 'ranking']
         );
-        $this->setPermission('command.default');
+        $this->setPermission('rivarly.play');
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): void {

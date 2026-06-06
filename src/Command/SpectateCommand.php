@@ -29,7 +29,7 @@ final class SpectateCommand extends Command {
             usageMessage: '/spectate [gracz] | /spectate leave',
             aliases:      ['obserwuj', 'spec']
         );
-        $this->setPermission('command.default');
+        $this->setPermission('rivarly.play');
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): void {

@@ -20,7 +20,7 @@ final class PartyCommand extends Command {
         private readonly SessionManager $sessionManager
     ) {
         parent::__construct('party', 'Zarządzanie drużyną.', '/party [invite|leave|kick|duel|info]', ['p', 'druzyna']);
-        $this->setPermission('command.default');
+        $this->setPermission('rivarly.play');
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): void {

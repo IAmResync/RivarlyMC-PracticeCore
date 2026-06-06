@@ -60,7 +60,7 @@ final class ProfileForm {
             public function jsonSerialize(): mixed {
                 return [
                     'type'    => 'form',
-                    'title'   => '§9§lYour Profile',
+                    'title'   => 'profile:§9§lYour Profile',
                     'content' => $this->content,
                     'buttons' => [
                         ['text' => "§fDetailed Statistics"],

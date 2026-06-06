@@ -72,7 +72,7 @@ interface DataConnector{
 	 * @throws GenericStatementFileParseException if the file contains a syntax error or compile error
 	 * @throws InvalidArgumentException if the file introduces statements that duplicate the names of those previously loaded
 	 */
-	public function loadQueryFile($fh, ?string $fileName = null) : void;
+	public function loadQueryFile($fh, string $fileName = null) : void;
 
 	/**
 	 * Loads a pre-formatted query.
@@ -199,13 +199,13 @@ interface DataConnector{
 	 *
 	 * This function is the await-generator variant. Non await-generator users should not use this function.
 	 *
-	 * The generator returns the array of rows.
+	 * The generator returns the number of affected rows.
 	 *
 	 * If {@link SqlColumnInfo} is needed, use `asyncSelectWithInfo` instead.
 	 *
 	 * @param string  $queryName the {@link GenericPreparedStatement} query name
 	 * @param mixed[] $args      the variables as defined in the {@link GenericPreparedStatement}
-	 * @return Generator<mixed, Await::RESOLVE|Await::REJECT, mixed, array[]>
+	 * @return Generator<mixed, Await::RESOLVE|Await::REJECT, mixed, array[] $rows>
 	 */
 	public function asyncSelect(string $queryName, array $args = []) : Generator;
 

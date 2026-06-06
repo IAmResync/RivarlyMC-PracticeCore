@@ -1,0 +1,6 @@
+.idea/
+.sami/
+*.tmp
+*.bak
+
+/vendor/

@@ -1,0 +1,7 @@
+name: libasynql
+authors:
+  - SOFe
+antigen: poggit\libasynql
+version: 4.2.3
+api:
+  - 5.0.0

@@ -8,3 +8,5 @@ composer.lock
 .env
 .phpunit.result.cache
 /pocketmine/
+/libasynql-4.2.3/
+/rivarly.zip

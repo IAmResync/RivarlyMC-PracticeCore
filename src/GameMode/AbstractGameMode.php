@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace GameMode;
 
+use pocketmine\data\bedrock\EnchantmentIdMap;
+use pocketmine\item\enchantment\EnchantmentInstance;
+use pocketmine\item\Item;
+use pocketmine\item\StringToItemParser;
+
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\player\Player;
 
 /**
- * TODO: Klasa bazowa implementująca wspólne mechaniki dla wszystkich trybów gry.
- * Zawiera domyślne zachowania, które mogą być nadpisywane przez konkretne tryby.
- * Upraszcza proces tworzenia nowych trybów poprzez reużycie kodu bazowego.
+ * TODO: Klasa bazowa implementujÄ…ca wspÃ³lne mechaniki dla wszystkich trybÃ³w gry.
+ * Zawiera domyÅ›lne zachowania, ktÃ³re mogÄ… byÄ‡ nadpisywane przez konkretne tryby.
+ * Upraszcza proces tworzenia nowych trybÃ³w poprzez reuÅ¼ycie kodu bazowego.
  */
 abstract class AbstractGameMode {
 
@@ -25,29 +30,29 @@ abstract class AbstractGameMode {
     }
 
     /**
-     * Zwraca unikalną nazwę trybu gry (np. "NoDebuff").
+     * Zwraca unikalnÄ… nazwÄ™ trybu gry (np. "NoDebuff").
      */
     public function getName(): string {
         return $this->name;
     }
 
     /**
-     * Czy tryb pozwala na stawianie i niszczenie bloków.
+     * Czy tryb pozwala na stawianie i niszczenie blokÃ³w.
      */
     public function isBuildingAllowed(): bool {
         return $this->allowBuilding;
     }
 
     /**
-     * Czy na tym trybie gracze tracą pasek głodu.
+     * Czy na tym trybie gracze tracÄ… pasek gÅ‚odu.
      */
     public function isHungerEnabled(): bool {
         return $this->allowHunger;
     }
 
     /**
-     * Hook wywoływany w momencie startu pojedynku na tym trybie.
-     * Służy m.in. do nadawania domyślnych efektów mikstur.
+     * Hook wywoÅ‚ywany w momencie startu pojedynku na tym trybie.
+     * SÅ‚uÅ¼y m.in. do nadawania domyÅ›lnych efektÃ³w mikstur.
      */
     public function onStart(Player $player1, Player $player2): void {
         foreach ([$player1, $player2] as $player) {
@@ -60,24 +65,45 @@ abstract class AbstractGameMode {
     }
 
     /**
-     * Hook wywoływany automatycznie po zakończeniu meczu.
+     * Hook wywoÅ‚ywany automatycznie po zakoÅ„czeniu meczu.
      */
     public function onStop(Player $player1, Player $player2): void {
-        // Miejsce na logikę czyszczącą po walce
+        // Miejsce na logikÄ™ czyszczÄ…cÄ… po walce
     }
 
     /**
-     * Domyślna obsługa obrażeń na danym trybie.
-     * Pozwala łatwo zmodyfikować knockback lub redukować poszczególne rodzaje damage.
+     * DomyÅ›lna obsÅ‚uga obraÅ¼eÅ„ na danym trybie.
+     * Pozwala Å‚atwo zmodyfikowaÄ‡ knockback lub redukowaÄ‡ poszczegÃ³lne rodzaje damage.
      */
     public function handleDamage(EntityDamageEvent $event): void {
-        // Domyślne zachowanie PocketMine (tryby mogą to nadpisać np. pod Boxing).
+        // DomyÅ›lne zachowanie PocketMine (tryby mogÄ… to nadpisaÄ‡ np. pod Boxing).
     }
 
     /**
-     * Hook wywoływany, gdy gracz zginie w trakcie trwania tego trybu.
+     * Hook wywoÅ‚ywany, gdy gracz zginie w trakcie trwania tego trybu.
      */
     public function onPlayerDeath(string $matchId, string $killerName, string $victimName): void {
-        // Domyślny komunikat o eliminacji
+        // DomyÅ›lny komunikat o eliminacji
+    }
+
+    /**
+     * Helper: parsuje string itema i dodaje enchanty.
+     * @param array<string, int> $enchants enchantId => level
+     */
+    protected function buildItem(string $itemString, array $enchants = [], int $count = 1): Item {
+        $item = StringToItemParser::getInstance()->parse($itemString) ?? \pocketmine\item\VanillaItems::AIR();
+        $item->setCount($count);
+        foreach ($enchants as $enchantId => $level) {
+            if (is_int($enchantId)) {
+                $enchantment = EnchantmentIdMap::getInstance()->fromId($enchantId);
+            } else {
+                $enchantment = \pocketmine\item\enchantment\StringToEnchantmentParser::getInstance()->parse((string)$enchantId);
+            }
+            if ($enchantment !== null) {
+                $item->addEnchantment(new EnchantmentInstance($enchantment, (int)$level));
+            }
+        }
+        return $item;
     }
 }
+

@@ -71,7 +71,7 @@ final class SumoMode extends AbstractGameMode {
         return $this->config->knockbackMultiplier;
     }
 
-    private function buildItem(string $itemString, array $enchants = []): Item {
+    protected function buildItem(string $itemString, array $enchants = [], int $count = 1): Item {
         $item = StringToItemParser::getInstance()->parse($itemString);
 
         foreach ($enchants as $enchantId => $level) {

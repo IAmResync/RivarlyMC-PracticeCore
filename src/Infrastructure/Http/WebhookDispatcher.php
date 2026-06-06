@@ -9,95 +9,94 @@ use pocketmine\scheduler\AsyncTask;
 use Core\Plugin;
 
 /**
- * TODO: Odpowiada za wysyłanie powiadomień HTTP (webhooków) do systemów zewnętrznych.
+ * Odpowiada za wysyłanie powiadomień HTTP (webhooków) do systemów zewnętrznych.
  * Integruje serwer Minecraft z aplikacjami webowymi (np. Next.js) w celu aktualizacji WWW.
- * Działa asynchronicznie, przekazując wyniki meczów do zewnętrznych API.
+ * Działa asynchronicznie, nie blokując głównego wątku serwera.
  */
-class WebhookDispatcher
-{
+class WebhookDispatcher {
 
     private string $apiUrl;
     private string $secretToken;
     private bool $enabled = false;
 
-    /**
-     * Konstruktor dyspenczera webhooków.
-     * Pobiera konfiguracje z sekcji http.webhooks w config.yml.
-     */
-    public function __construct(Plugin $plugin)
-    {
+    public function __construct(Plugin $plugin) {
         $config = $plugin->getConfig()->getNested("http.webhooks", []);
-        $this->apiUrl = (string)($config["api_url"] ?? "");
-        $this->secretToken = (string)($config["secret_token"] ?? "");
-        $this->enabled = (bool)($config["enabled"] ?? false);
+        // config.yml używa "api-url" (z myślnikiem)
+        $this->apiUrl      = (string) ($config["api-url"]      ?? $config["api_url"] ?? "");
+        $this->secretToken = (string) ($config["secret-token"] ?? $config["secret_token"] ?? "");
+        $this->enabled     = (bool)   ($config["enabled"]      ?? false);
     }
 
     /**
-     * Asynchronicznie wysyła dane (payload) do API Next.js za pomocą metody POST.
-     * * @param string $eventType Nazwa zdarzenia (np. "match_finished", "rank_update")
-     * @param array<string, mixed> $data Dowolne dane, które zostaną zamienione na JSON
+     * Asynchronicznie wysyła dane (payload) do API Next.js metodą POST.
+     *
+     * @param string               $eventType Nazwa zdarzenia (np. "match_finished")
+     * @param array<string, mixed> $data      Dane do wysłania jako JSON
      */
-    public function dispatch(string $eventType, array $data): void
-    {
+    public function dispatch(string $eventType, array $data): void {
         if (!$this->enabled || empty($this->apiUrl)) {
             return;
         }
 
-        $payload = [
-            "event" => $eventType,
+        $payload = json_encode([
+            "event"     => $eventType,
             "timestamp" => time(),
-            "data" => $data
-        ];
+            "data"      => $data,
+        ]);
 
-        // Nagłówki HTTP, w tym token autoryzacyjny (Bearer)
+        if ($payload === false) {
+            return;
+        }
+
         $headers = [
             "Content-Type: application/json",
             "Authorization: Bearer " . $this->secretToken,
-            "User-Agent: RivarlyPracticeCore/1.0"
+            "User-Agent: RivarlyPracticeCore/1.0",
         ];
 
-        // Pushujemy zadanie do puli wątków PocketMine (Async Pool)
-        Server::getInstance()->getAsyncPool()->submitTask(new SendWebhookAsyncTask($this->apiUrl, json_encode($payload), $headers));
+        Server::getInstance()->getAsyncPool()->submitTask(
+            new SendWebhookAsyncTask($this->apiUrl, $payload, $headers)
+        );
     }
 }
 
+/**
+ * Zadanie asynchroniczne wykonujące żądanie HTTP w osobnym wątku.
+ * Nie blokuje głównego wątku serwera Minecraft.
+ */
+class SendWebhookAsyncTask extends AsyncTask {
+
+    private string $url;
+    private string $payload;
+    /** @var string[] */
+    private array $headers;
+
     /**
-     * Wewnętrza klasa zadania asynchronicznego.
-     * Cały kod wewnątrz metody onRun wykonuje się w osobnym wątku, nie obciążając serwera Minecraft!
+     * @param string   $url
+     * @param string   $payload JSON-encoded body
+     * @param string[] $headers
      */
-    class SendWebhookAsyncTask extends AsyncTask {
+    public function __construct(string $url, string $payload, array $headers) {
+        $this->url     = $url;
+        $this->payload = $payload;
+        $this->headers = $headers;
+    }
 
-        private string $url;
-        private string $payload;
-        /** @var string[] */
-        private array $headers;
-
-        /**
-         * @param string[] $headers
-         */
-        public function __construct(string $url, string $payload, array $headers) {
-            $this->url = $url;
-            $this->payload = $payload;
-            $this->headers = $headers;
+    public function onRun(): void {
+        $ch = curl_init($this->url);
+        if ($ch === false) {
+            return;
         }
 
-        public function onRun(): void {
-            $ch = curl_init($this->url);
-            if ($ch === false) {
-                return;
-            }
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS,     $this->payload);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER,     $this->headers);
+        curl_setopt($ch, CURLOPT_TIMEOUT,        4);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 
-            // Konfiguracja cURL pod bezpieczny i szybki transfer danych POST
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->payload);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 4); // Timeout 4 sekundy
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-            curl_setopt($ch, CURLOPT_PROXY_SSL_VERIFYPEER, true);
-
-            // Wykonujemy zapytanie (w osobnym wątku worker!)
-            curl_exec($ch);
-            curl_close($ch);
-        }
+        curl_exec($ch);
+        curl_close($ch);
+    }
 }

@@ -15,18 +15,18 @@ use Application\Ability\impl\GuardianAngelAbility;
 
 class Plugin extends PluginBase {
 
-    private ?\Rivarly\Core\Container $container = null;
+    private ?\Core\Container $container = null;
 
     protected function onEnable(): void {
         $this->saveDefaultConfig();
 
         try {
-            $bootstrap = new \Rivarly\Core\Bootstrap($this);
+            $bootstrap = new \Core\Bootstrap($this);
             $this->container = $bootstrap->init();
             
             // Register default abilities
-            $this->container->abilityRegistry->register(new \Rivarly\Application\Ability\impl\ComboAbility($this->getScheduler()));
-            $this->container->abilityRegistry->register(new \Rivarly\Application\Ability\impl\GuardianAngelAbility());
+            $this->container->abilityRegistry->register(new \Application\Ability\impl\ComboAbility($this->getScheduler()));
+            $this->container->abilityRegistry->register(new \Application\Ability\impl\GuardianAngelAbility());
             
             $this->getLogger()->info("§aRivarly Practice Core has been enabled successfully!");
         } catch (\Throwable $e) {
@@ -52,7 +52,7 @@ class Plugin extends PluginBase {
         }
     }
 
-    public function getContainer(): ?\Rivarly\Core\Container {
+    public function getContainer(): ?\Core\Container {
         return $this->container;
     }
 }

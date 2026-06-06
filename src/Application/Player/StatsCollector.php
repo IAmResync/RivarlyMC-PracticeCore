@@ -31,7 +31,7 @@ final class StatsCollector {
     /**
      * Kończy sesję zbierania danych i zwraca pełny snapshot walki gotowy do zapisu SQL.
      */
-    public function endSession(Player $player): ?\Rivarly\Domain\Stats\MatchSnapshot {
+    public function endSession(Player $player): ?\Domain\Stats\MatchSnapshot {
         $uuid = $player->getUniqueId()->toString();
         $session = $this->activeSessions[$uuid] ?? null;
 

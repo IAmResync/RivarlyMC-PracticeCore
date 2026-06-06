@@ -46,9 +46,9 @@ final class PluginConfig {
     private float $reachBuffer;
     private int $maxCps;
 
-    private \Rivarly\Core\Plugin $plugin;
+    private \Core\Plugin $plugin;
 
-    public function __construct(\Rivarly\Core\Plugin $plugin) {
+    public function __construct(\Core\Plugin $plugin) {
         $this->plugin = $plugin;
         $this->load();
     }

@@ -15,10 +15,14 @@ use pocketmine\entity\effect\EffectInstance;
 
 /**
  * Implementacja konkretnego trybu gry typu Nodebuff.
- * Definiuje specyficzne zasady walki, gdzie kluczowe jest używanie mikstur regeneracji.
- * Odpowiada za wczytanie odpowiedniego kit-u startowego dla każdego gracza w meczu.
+ * Definiuje specyficzne zasady walki, gdzie kluczowe jest uÅ¼ywanie mikstur regeneracji.
+ * Odpowiada za wczytanie odpowiedniego kit-u startowego dla kaÅ¼dego gracza w meczu.
  */
 final class NodebuffMode extends AbstractGameMode implements GameModeInterface {
+
+    public function __construct() {
+        parent::__construct('nodebuff', false, true);
+    }
 
     /**
      * Zwraca unikalny identyfikator trybu.
@@ -28,38 +32,37 @@ final class NodebuffMode extends AbstractGameMode implements GameModeInterface {
     }
 
     /**
-     * Zwraca ładną nazwę wyświetlaną w menu/na scoreboardzie.
+     * Zwraca Å‚adnÄ… nazwÄ™ wyÅ›wietlanÄ… w menu/na scoreboardzie.
      */
     public function getDisplayName(): string {
-        return '§bNodebuff';
+        return 'Â§bNodebuff';
     }
 
     /**
-     * Zwraca konfigurację trybu gry.
+     * Zwraca konfiguracjÄ™ trybu gry.
      */
     public function getConfig(): GameModeConfig {
         return new GameModeConfig();
     }
 
     /**
-     * Wywoływane w momencie rozpoczęcia pojedynku na tym trybie.
-     * (NAPRAWIONO: Spełnia kontrakt z GameModeInterface)
+     * WywoÅ‚ywane w momencie rozpoczÄ™cia pojedynku na tym trybie.
+     * (NAPRAWIONO: SpeÅ‚nia kontrakt z GameModeInterface)
      */
-    public function onMatchStart(Player|string $matchId): void {
-        $matchId->sendMessage("§aPojedynek Nodebuff się rozpoczął! Powodzenia.");
+    public function onMatchStart(string $matchId): void {
+        // Match started
     }
 
     /**
-     * Wywoływane w momencie zakończenia pojedynku na tym trybie.
-     * (NAPRAWIONO: Spełnia kontrakt z GameModeInterface)
+     * WywoÅ‚ywane w momencie zakoÅ„czenia pojedynku na tym trybie.
+     * (NAPRAWIONO: SpeÅ‚nia kontrakt z GameModeInterface)
      */
-    public function onMatchEnd(Player|string $matchId): void {
-        // Czyszczenie gracza po walce (efekty zostaną usunięte automatycznie przez MatchManagera)
-        $matchId->sendMessage("§cKoniec walki!");
+    public function onMatchEnd(string $matchId): void {
+        // Match ended
     }
 
     /**
-     * Zwraca strukturę przedmiotów (kitu) w formacie czystego PHP.
+     * Zwraca strukturÄ™ przedmiotÃ³w (kitu) w formacie czystego PHP.
      * @return array<int, array<string, mixed>>
      */
     public function getInventoryTemplate(): array {
@@ -75,19 +78,19 @@ final class NodebuffMode extends AbstractGameMode implements GameModeInterface {
             ]
         ];
 
-        // Slot 7: Perły enderu
+        // Slot 7: PerÅ‚y enderu
         $items[7] = [
             'id' => 'minecraft:ender_pearl',
             'count' => 16
         ];
 
-        // Slot 8: Złote jabłko
+        // Slot 8: ZÅ‚ote jabÅ‚ko
         $items[8] = [
             'id' => 'minecraft:golden_apple',
             'count' => 1
         ];
 
-        // Reszta slotów wypełniona rzucanymi potkami uzdrawiania II
+        // Reszta slotÃ³w wypeÅ‚niona rzucanymi potkami uzdrawiania II
         for ($i = 1; $i <= 35; $i++) {
             if (isset($items[$i])) {
                 continue;
@@ -103,7 +106,7 @@ final class NodebuffMode extends AbstractGameMode implements GameModeInterface {
     }
 
     /**
-     * Zwraca strukturę zbroi w formacie czystego PHP.
+     * Zwraca strukturÄ™ zbroi w formacie czystego PHP.
      * @return array<int, array<string, mixed>>
      */
     public function getArmorTemplate(): array {
@@ -116,7 +119,7 @@ final class NodebuffMode extends AbstractGameMode implements GameModeInterface {
     }
 
     /**
-     * Zwraca stałe efekty w formacie [nazwa => poziom].
+     * Zwraca staÅ‚e efekty w formacie [nazwa => poziom].
      * @return array<string, int>
      */
     public function getMatchLongEffects(): array {
@@ -125,3 +128,4 @@ final class NodebuffMode extends AbstractGameMode implements GameModeInterface {
         ];
     }
 }
+

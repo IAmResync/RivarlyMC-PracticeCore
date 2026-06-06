@@ -88,7 +88,7 @@ class MatchTickTask extends Task {
     /**
      * Broadcast a message to all players in a match (both players and spectators).
      */
-    private function broadcastToMatch(\Rivarly\Domain\Match\GameMatch $match, string $message): void {
+    private function broadcastToMatch(\Domain\Match\GameMatch $match, string $message): void {
         $server = \pocketmine\Server::getInstance();
 
         // Send to all players in the match

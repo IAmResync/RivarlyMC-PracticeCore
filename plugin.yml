@@ -1,0 +1,37 @@
+name: RivalryPracticeCore
+main: Core\Plugin
+version: 1.0.0
+api: ["5.0.0"]
+author: RivalryMC
+description: Professional competitive practice plugin for RivalryMC
+
+load: POSTWORLD
+
+commands:
+  queue:
+    description: "Join or leave the matchmaking queue"
+    usage: "/queue <mode> | /queue leave"
+    aliases: [q, arena]
+    permission: rivarly.play
+  duel:
+    description: "Challenge a player to a private duel"
+    usage: "/duel <player> <mode> | /duel accept|deny <player>"
+    aliases: [d]
+    permission: rivarly.play
+  stats:
+    description: "Show player statistics"
+    usage: "/stats [player]"
+    aliases: [statystyki, profil]
+    permission: rivarly.play
+  admin:
+    description: "Admin commands"
+    usage: "/admin <subcommand>"
+    permission: rivarly.admin
+
+permissions:
+  rivarly.admin:
+    description: "Gives access to admin commands"
+    default: op
+  rivarly.play:
+    description: "Allows playing on the practice server"
+    default: true

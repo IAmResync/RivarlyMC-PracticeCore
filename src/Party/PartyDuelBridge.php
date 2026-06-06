@@ -68,7 +68,7 @@ final class PartyDuelBridge {
 
         // 4. Przekazanie pary i reprezentantów do standardowej metody createMatch
         try {
-            $pair = new \Rivarly\Application\Matchmaking\MatchPair(
+            $pair = new \Application\Matchmaking\MatchPair(
                 playerAUuid: $leaderA->getUuid(),
                 playerAName: $leaderA->getName(),
                 playerAElo: (int) $eloA,

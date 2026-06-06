@@ -87,7 +87,7 @@ final class BoxingListener implements Listener {
     // Helper
     // -----------------------------------------------------------------------
 
-    private function getProfile(string $uuid): ?\Rivarly\Domain\Player\PlayerProfile {
+    private function getProfile(string $uuid): ?\Domain\Player\PlayerProfile {
         // TODO: inject SessionManager and call getProfile($uuid)
         return null;
     }

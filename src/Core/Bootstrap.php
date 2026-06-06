@@ -30,13 +30,13 @@ use Command\StatsCommand;
 class Bootstrap {
 
     public function __construct(
-        private readonly \Rivarly\Core\Plugin $plugin
+        private readonly \Core\Plugin $plugin
     ) {
     }
 
-    public function init(): \Rivarly\Core\Container
+    public function init(): \Core\Container
     {
-        $container = new \Rivarly\Core\Container($this->plugin);
+        $container = new \Core\Container($this->plugin);
 
         $this->registerCommands($container);
         $this->registerListeners($container);
@@ -45,27 +45,27 @@ class Bootstrap {
         return $container;
     }
 
-    private function registerCommands(\Rivarly\Core\Container $container): void {
+    private function registerCommands(\Core\Container $container): void {
         $map = $this->plugin->getServer()->getCommandMap();
 
-        $map->register('rivarly', new \Rivarly\Command\QueueCommand(
+        $map->register('rivarly', new \Command\QueueCommand(
             $container->queueManager,
             $container->sessionManager,
             $container->gameModeRegistry
         ));
 
-        $map->register('rivarly', new \Rivarly\Command\DuelCommand(
+        $map->register('rivarly', new \Command\DuelCommand(
             $container->duelManager,
             $container->sessionManager,
             $container->gameModeRegistry
         ));
 
-        $map->register('rivarly', new \Rivarly\Command\StatsCommand(
+        $map->register('rivarly', new \Command\StatsCommand(
             $container->sessionManager
         ));
     }
 
-    private function registerListeners(\Rivarly\Core\Container $container): void {
+    private function registerListeners(\Core\Container $container): void {
         $pm = $this->plugin->getServer()->getPluginManager();
 
         $sumoMode = $container->gameModeRegistry->getMode('sumo');
@@ -78,7 +78,7 @@ class Bootstrap {
         };
 
         $pm->registerEvents(
-            new \Rivarly\Listener\PlayerListener(
+            new \Listener\PlayerListener(
                 $container->sessionManager,
                 $container->queueManager,
                 $container->matchManager,
@@ -88,12 +88,12 @@ class Bootstrap {
             $this->plugin
         );
 
-        $reachChecker = new \Rivarly\AntiCheat\ReachChecker($container->config);
-        $cpsLimiter = new \Rivarly\AntiCheat\CpsLimiter($container->config);
-        $hitValidator = new \Rivarly\AntiCheat\HitValidator($reachChecker, $cpsLimiter, $container->matchManager);
+        $reachChecker = new \AntiCheat\ReachChecker($container->config);
+        $cpsLimiter = new \AntiCheat\CpsLimiter($container->config);
+        $hitValidator = new \AntiCheat\HitValidator($reachChecker, $cpsLimiter, $container->matchManager);
 
         $pm->registerEvents(
-            new \Rivarly\Listener\CombatListener(
+            new \Listener\CombatListener(
                 $container->knockbackEngine,
                 $container->matchManager,
                 $container->sessionManager,
@@ -104,7 +104,7 @@ class Bootstrap {
         );
 
         $pm->registerEvents(
-            new \Rivarly\Listener\PacketListener(
+            new \Listener\PacketListener(
                 $container->matchManager,
                 $container->statsCollector
             ),
@@ -112,14 +112,14 @@ class Bootstrap {
         );
 
         $pm->registerEvents(
-            new \Rivarly\Listener\WorldListener(
+            new \Listener\WorldListener(
                 $container->matchManager
             ),
             $this->plugin
         );
 
         $pm->registerEvents(
-            new \Rivarly\Application\Ability\AbilityListener(
+            new \Application\Ability\AbilityListener(
                 $container->abilityRegistry,
                 $container->abilityCooldownManager,
                 $container->matchManager,
@@ -128,9 +128,9 @@ class Bootstrap {
             $this->plugin
         );
 
-        if ($sumoMode instanceof \Rivarly\GameMode\Sumo\SumoMode) {
+        if ($sumoMode instanceof \GameMode\Sumo\SumoMode) {
             $pm->registerEvents(
-                new \Rivarly\GameMode\Sumo\SumoListener(
+                new \GameMode\Sumo\SumoListener(
                     $sumoMode,
                     $container->matchManager,
                     $container->sessionManager,
@@ -142,18 +142,18 @@ class Bootstrap {
         }
     }
 
-    private function registerTasks(\Rivarly\Core\Container $container): void {
+    private function registerTasks(\Core\Container $container): void {
         $scheduler = $this->plugin->getScheduler();
 
         $scheduler->scheduleRepeatingTask(
-            new \Rivarly\Task\MatchTickTask($container->matchManager),
+            new \Task\MatchTickTask($container->matchManager),
             20
         );
 
         $scheduler->scheduleRepeatingTask(
-            new \Rivarly\Task\QueueTickTask(
+            new \Task\QueueTickTask(
                 $container->queueManager,
-                new \Rivarly\Application\Matchmaking\Matchmaker($container->queueManager),
+                new \Application\Matchmaking\Matchmaker($container->queueManager),
                 $container->matchManager,
                 $container->sessionManager,
                 $container->playerRepository
@@ -162,12 +162,12 @@ class Bootstrap {
         );
 
         $scheduler->scheduleRepeatingTask(
-            new \Rivarly\Task\TournamentTickTask($container->tournamentManager),
+            new \Task\TournamentTickTask($container->tournamentManager),
             20
         );
 
         $scheduler->scheduleRepeatingTask(
-            new \Rivarly\Task\StatsFlushTask(
+            new \Task\StatsFlushTask(
                 $container->sessionManager,
                 $container->playerRepository
             ),

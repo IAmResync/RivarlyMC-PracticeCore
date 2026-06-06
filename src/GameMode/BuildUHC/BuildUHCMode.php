@@ -8,17 +8,21 @@ use GameMode\AbstractGameMode;
 use Domain\GameMode\GameModeConfig;
 
 /**
- * BuildUHC game mode — players can place limited blocks during the fight.
+ * BuildUHC game mode â€” players can place limited blocks during the fight.
  * Full diamond armor + sword + bow + blocks (sand/wood).
  * Win: kill the opponent. All placed blocks are removed after match.
  */
 final class BuildUHCMode extends AbstractGameMode {
 
+    public function __construct() {
+        parent::__construct('build_uhc', true, false);
+    }
+
     /** @var array<string, ArenaBlockTracker> matchId => tracker */
     private array $trackers = [];
 
     public function getName(): string        { return 'build_uhc'; }
-    public function getDisplayName(): string { return '§dBuild UHC'; }
+    public function getDisplayName(): string { return 'Â§dBuild UHC'; }
 
     public function getConfig(): GameModeConfig {
         return new GameModeConfig(matchDuration: 600, startingHealth: 20.0);
@@ -65,3 +69,4 @@ final class BuildUHCMode extends AbstractGameMode {
         unset($this->trackers[$matchId]);
     }
 }
+

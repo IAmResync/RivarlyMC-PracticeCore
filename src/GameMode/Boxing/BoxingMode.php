@@ -15,7 +15,7 @@ use Domain\GameMode\GameModeConfig;
  * Boxing game mode implementation.
  *
  * Core difference from other modes:
- *   - No player can die — HP resets to 20.0 after every hit
+ *   - No player can die â€” HP resets to 20.0 after every hit
  *   - Win condition: first to reach maxHits (default 100)
  *   - Timeout win: whoever has more hits after 3 minutes
  *   - Kit: just a sword, no potions, no armor
@@ -94,14 +94,14 @@ final class BoxingMode extends AbstractGameMode {
     }
 
     // -----------------------------------------------------------------------
-    // Core logic — called by BoxingListener
+    // Core logic â€” called by BoxingListener
     // -----------------------------------------------------------------------
 
     /**
      * Process a hit event. Returns the winner UUID if match should end, null otherwise.
      * BoxingListener must:
      *   1. Reset victim HP to 20 regardless of return value
-     *   2. If return value != null → call MatchManager::endMatch()
+     *   2. If return value != null â†’ call MatchManager::endMatch()
      *   3. Update action bar with session->getScoreLine()
      */
     public function processHit(string $matchId, string $attackerUuid): ?string {
@@ -113,7 +113,7 @@ final class BoxingMode extends AbstractGameMode {
     }
 
     /**
-     * Process timeout — returns winner UUID or null on draw.
+     * Process timeout â€” returns winner UUID or null on draw.
      */
     public function processTimeout(string $matchId): ?string {
         return $this->sessions[$matchId]?->getWinnerByTimeOut();
@@ -127,7 +127,7 @@ final class BoxingMode extends AbstractGameMode {
         return $this->config;
     }
 
-    private function buildItem(string $itemString, array $enchants = []): Item {
+    protected function buildItem(string $itemString, array $enchants = [], int $count = 1): Item {
         $item = StringToItemParser::getInstance()->parse($itemString);
 
         foreach ($enchants as $enchantId => $level) {

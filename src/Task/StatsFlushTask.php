@@ -10,8 +10,7 @@ use Application\Player\SessionManager;
 use Infrastructure\Database\PlayerRepository;
 
 /**
- * Repeating batch task responsible for periodically saving player statistics.
- * Runs every 30 seconds (600 ticks).
+ * Periodycznie zapisuje statystyki graczy do bazy danych (co 30s / 600 ticks).
  */
 class StatsFlushTask extends Task {
 
@@ -19,8 +18,8 @@ class StatsFlushTask extends Task {
     private const FLUSHES_BEFORE_LOG = 2;
 
     public function __construct(
-        private readonly SessionManager    $sessionManager,
-        private readonly PlayerRepository  $playerRepository,
+        private readonly SessionManager   $sessionManager,
+        private readonly PlayerRepository $playerRepository,
     ) {}
 
     public function onRun(): void {
@@ -36,11 +35,13 @@ class StatsFlushTask extends Task {
         $savedCount = 0;
 
         foreach ($onlinePlayers as $player) {
-            $uuid = $player->getUniqueId()->toString();
+            $uuid    = $player->getUniqueId()->toString();
             $profile = $this->sessionManager->getSessionByUuid($uuid);
 
             if ($profile !== null) {
                 $this->playerRepository->saveProfile(
+                    $profile->getUuid(),
+                    $profile->getXuid(),
                     $profile->getName(),
                     $profile->getGlobalElo(),
                     $profile->getGlobalKills(),
@@ -51,7 +52,7 @@ class StatsFlushTask extends Task {
         }
 
         if ($this->flushCounter % self::FLUSHES_BEFORE_LOG === 0) {
-            $server->getLogger()->debug("§7[StatsFlusher] Saved §f$savedCount §7player profiles to database");
+            $server->getLogger()->debug("[StatsFlusher] Saved $savedCount player profile(s) to database.");
         }
     }
 }

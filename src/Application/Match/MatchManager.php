@@ -21,7 +21,7 @@ use Infrastructure\Http\WebhookDispatcher;
  */
 final class MatchManager {
 
-    /** @var array<string, \Rivarly\Domain\Match\GameMatch> matchId => GameMatch */
+    /** @var array<string, \Domain\Match\GameMatch> matchId => GameMatch */
     private array $activeMatches = [];
 
     /** @var array<string, string> playerUuid => matchId */
@@ -42,7 +42,7 @@ final class MatchManager {
         PlayerProfile $profileA,
         PlayerProfile $profileB,
         ?string       $arenaId = null,
-    ): ?\Rivarly\Domain\Match\GameMatch {
+    ): ?\Domain\Match\GameMatch {
         $server = Server::getInstance();
         $playerA = $server->getPlayerExact($profileA->getName());
         $playerB = $server->getPlayerExact($profileB->getName());
@@ -53,7 +53,7 @@ final class MatchManager {
 
         $matchId = $this->generateMatchId();
 
-        $match = new \Rivarly\Domain\Match\GameMatch(
+        $match = new \Domain\Match\GameMatch(
             matchId:  $matchId,
             gameMode: $pair->gameMode,
             players:  [
@@ -167,11 +167,11 @@ final class MatchManager {
     // Odczyt stanu
     // -----------------------------------------------------------------------
 
-    public function getMatch(string $matchId): ?\Rivarly\Domain\Match\GameMatch {
+    public function getMatch(string $matchId): ?\Domain\Match\GameMatch {
         return $this->activeMatches[$matchId] ?? null;
     }
 
-    public function getMatchByPlayer(string $uuid): ?\Rivarly\Domain\Match\GameMatch {
+    public function getMatchByPlayer(string $uuid): ?\Domain\Match\GameMatch {
         $matchId = $this->playerMatchIndex[$uuid] ?? null;
         if ($matchId === null) return null;
         return $this->activeMatches[$matchId] ?? null;
@@ -185,7 +185,7 @@ final class MatchManager {
         return count($this->activeMatches);
     }
 
-    /** @return array<string, \Rivarly\Domain\Match\GameMatch> */
+    /** @return array<string, \Domain\Match\GameMatch> */
     public function getAllActiveMatches(): array {
         return $this->activeMatches;
     }

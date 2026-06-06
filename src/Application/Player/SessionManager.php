@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Application\Player;
 
+use Logger;
 use pocketmine\player\Player;
-use pocketmine\utils\TextFormat;
-use pocketmine\utils\MainLogger;
 use Domain\Player\PlayerProfile;
 use Infrastructure\Database\PlayerRepository;
 
@@ -18,45 +17,40 @@ class SessionManager {
     /** @var array<string, PlayerProfile> klucz: UUID gracza */
     private array $sessions = [];
 
-    private PlayerRepository $playerRepository;
-    private MainLogger $logger;
-
-    public function __construct(PlayerRepository $playerRepository, MainLogger $logger) {
-        $this->playerRepository = $playerRepository;
-        $this->logger = $logger;
-    }
+    public function __construct(
+        private readonly PlayerRepository $playerRepository,
+        private readonly Logger $logger,
+    ) {}
 
     /**
      * Asynchronicznie ładuje statystyki z DB i buduje profil gracza w RAM.
-     * Profil jest budowany z danych PocketMine (uuid, name) + danych DB (elo, kills, deaths).
+     * Tymczasowy profil z domyślnym ELO jest ustawiany od razu.
      */
     public function createSession(Player $player): void {
         $uuid = $player->getUniqueId()->toString();
         $xuid = $player->getXuid();
         $name = $player->getName();
 
-        // Tymczasowy profil "dummy" żeby gracz mógł dołączyć zanim DB odpowie
-        $tempProfile = new PlayerProfile(
+        // Profil tymczasowy — zastąpiony po odpowiedzi DB
+        $this->sessions[$uuid] = new PlayerProfile(
             uuid: $uuid,
             xuid: $xuid,
             name: $name,
             globalElo: 1000,
         );
-        $this->sessions[$uuid] = $tempProfile;
 
         $this->playerRepository->loadProfile(
             $name,
             function (array $row) use ($uuid, $xuid, $name): void {
-                // Budujemy profil z danych gracza + danych z DB
                 $profile = new PlayerProfile(
                     uuid: $uuid,
                     xuid: $xuid,
                     name: $name,
-                    globalElo: (int) $row['elo'],
+                    globalElo: (int) ($row['elo'] ?? 1000),
                 );
                 $profile->setLoadedStats(
-                    kills:  (int) $row['kills'],
-                    deaths: (int) $row['deaths'],
+                    kills:  (int) ($row['kills'] ?? 0),
+                    deaths: (int) ($row['deaths'] ?? 0),
                 );
                 $this->sessions[$uuid] = $profile;
             },
@@ -107,7 +101,7 @@ class SessionManager {
     }
 
     /**
-     * Zwraca wszystkie aktywne sesje.
+     * Zwraca wszystkie aktywne sesje (używane przez StatsFlushTask).
      * @return array<string, PlayerProfile>
      */
     public function getAllSessions(): array {

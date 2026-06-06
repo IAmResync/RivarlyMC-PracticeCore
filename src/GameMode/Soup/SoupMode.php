@@ -8,17 +8,21 @@ use GameMode\AbstractGameMode;
 use Domain\GameMode\GameModeConfig;
 
 /**
- * Soup game mode — players heal by consuming Mushroom Stew (+4 HP per bowl).
+ * Soup game mode â€” players heal by consuming Mushroom Stew (+4 HP per bowl).
  * No splash potions. Pure reflex and soup management.
  *
  * Kit: iron sword, full inventory of mushroom stew, leather armor.
  * Win: opponent dies (HP reaches 0).
- * Heal: PlayerItemConsumeEvent on mushroom stew → +4 HP, replace with empty bowl.
+ * Heal: PlayerItemConsumeEvent on mushroom stew â†’ +4 HP, replace with empty bowl.
  */
 final class SoupMode extends AbstractGameMode {
 
+    public function __construct() {
+        parent::__construct('soup', false, false);
+    }
+
     public function getName(): string        { return 'soup'; }
-    public function getDisplayName(): string { return '§2Soup'; }
+    public function getDisplayName(): string { return 'Â§2Soup'; }
 
     public function getConfig(): GameModeConfig {
         return new GameModeConfig(matchDuration: 600, startingHealth: 20.0);
@@ -44,3 +48,4 @@ final class SoupMode extends AbstractGameMode {
     /** HP restored per mushroom stew consumption */
     public function getHealAmount(): float { return 4.0; }
 }
+

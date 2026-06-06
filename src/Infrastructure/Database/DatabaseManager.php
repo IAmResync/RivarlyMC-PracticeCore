@@ -28,7 +28,7 @@ final class DatabaseManager {
      * Konstruktor menadżera bazy danych.
      * Łączymy libasynql przy użyciu sekcji z config.yml serwera.
      */
-    public function __construct(\Rivarly\Core\Plugin $plugin) {
+    public function __construct(\Core\Plugin $plugin) {
         // Wczytujemy sekcję "database" z pliku konfiguracyjnego pluginu.
         $databaseConfig = $plugin->getConfig()->get("database", [
             "type" => "sqlite",

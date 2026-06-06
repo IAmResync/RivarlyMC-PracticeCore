@@ -8,12 +8,15 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerMoveEvent;
+use pocketmine\event\player\PlayerItemUseEvent;
+use pocketmine\item\ItemTypeIds;
 use pocketmine\player\Player;
 use Application\Match\MatchManager;
 use Application\Matchmaking\QueueManager;
 use Application\Player\SessionManager;
 use Presentation\HotBar\HotBarManager;
 use Presentation\Scoreboard\ScoreboardManager;
+use Presentation\Profile\ProfileForm;
 
 /**
  * Handles player lifecycle: join, quit, movement, state changes.
@@ -40,7 +43,7 @@ final class PlayerListener implements Listener {
         // Tworzymy scoreboard (profil może być jeszcze null, updateuje się po załadowaniu)
         $this->scoreboardManager->createScoreboard($player);
 
-        $player->sendMessage("§a✓ §fWelcome to §bRivarlyMC§f!");
+        $player->sendMessage("§aWelcome to §bRivarlyMC§f!");
         $player->sendMessage("§7Type §f/queue <mode> §7to start a match, or §f/duel §7to challenge a player.");
     }
 
@@ -76,5 +79,33 @@ final class PlayerListener implements Listener {
 
     public function onPlayerMove(PlayerMoveEvent $event): void {
         // Rozszerzalne w przyszłości
+    }
+
+    /**
+     * Obsługuje kliknięcie prawym przyciskiem itemów w hotbarze lobby.
+     * Profil (Book, slot 4)  → otwiera ProfileForm
+     * Compass i Totem obsłużymy w kolejnych etapach.
+     */
+    public function onPlayerItemUse(PlayerItemUseEvent $event): void {
+        $player = $event->getPlayer();
+        $item   = $event->getItem();
+
+        // Tylko gracze w lobby mają aktywny hotbar nawigacyjny
+        $profile = $this->sessionManager->getSession($player);
+        if ($profile !== null && !$profile->isInLobby()) {
+            return;
+        }
+
+        $typeId = $item->getTypeId();
+
+        if ($typeId === ItemTypeIds::BOOK) {
+            // Slot 4 — Profil i statystyki
+            $event->cancel();
+            ProfileForm::open($player, $this->sessionManager);
+            return;
+        }
+
+        // Slot 0 — Kolejka (Compass) — TODO: otworzyć QueueForm
+        // Slot 8 — Turnieje (Totem)  — TODO: otworzyć TournamentForm
     }
 }

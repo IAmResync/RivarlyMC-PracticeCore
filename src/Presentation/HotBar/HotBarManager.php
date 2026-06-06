@@ -25,15 +25,15 @@ class HotBarManager {
         $player->getArmorInventory()->clearAll();
 
         // Kolejka (Compass) - Slot 0.
-        $queueItem = VanillaItems::COMPASS()->setCustomName("⚔️ Matchmaking Queue (Right-Click)");
+        $queueItem = VanillaItems::COMPASS()->setCustomName("§9Matchmaking Queue §f(Right-Click)");
         $inventory->setItem(0, $queueItem);
 
         // Profil (Book) - Slot 4
-        $profileItem = VanillaItems::BOOK()->setCustomName("👤 Your Profile & Stats (Right-Click)");
+        $profileItem = VanillaItems::BOOK()->setCustomName("§9Your Profile & Stats §f(Right-Click)");
         $inventory->setItem(4, $profileItem);
 
         // Turniej (Trophy -> Używam Totemu lub Złota jako ikony pucharu) - Slot 8
-        $tournamentName = VanillaItems::TOTEM()->setCustomName("🏆 Tournaments (Right-Click)");
+        $tournamentName = VanillaItems::TOTEM()->setCustomName("§9Tournaments §f(Right-Click)");
         $inventory->setItem(8, $tournamentName);
 
         // Ustawiam domyślnie zaznaczony pierwszy slot.

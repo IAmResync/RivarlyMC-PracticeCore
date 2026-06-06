@@ -54,17 +54,17 @@ class MatchTickTask extends Task {
                     match: $match,
                     config: $this->getConfig(), // TODO: Pass from Container
                     onCountdownTick: function(int $secondsLeft) use ($match) {
-                        $this->broadcastToMatch($match, "§6⏱ Starting in §f$secondsLeft§6 seconds...");
+                        $this->broadcastToMatch($match, "§fStarting in §9" . $secondsLeft . "§f seconds...");
                     },
                     onMatchStart: function() use ($match) {
-                        $this->broadcastToMatch($match, "§a► §fMatch started!");
+                        $this->broadcastToMatch($match, "§fMatch started!");
                     },
                     onGracePeriodEnd: function() use ($match) {
-                        $this->broadcastToMatch($match, "§c► §fPvP is now enabled!");
+                        $this->broadcastToMatch($match, "§fPvP is now enabled!");
                     },
                     onTimeout: function() use ($match, $matchId) {
                         // Match timeout – random winner or tie (handle in MatchManager)
-                        $this->broadcastToMatch($match, "§e⏱ Time limit reached!");
+                        $this->broadcastToMatch($match, "§fTime limit reached!");
                         // TODO: Handle timeout logic (random winner or force end)
                     },
                 );

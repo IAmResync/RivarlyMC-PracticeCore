@@ -71,7 +71,7 @@ class TournamentTickTask extends Task {
         $server = Server::getInstance();
         $currentRound = $this->tournamentManager->getCurrentRound();
 
-        $server->broadcastMessage("§e► §fRound $currentRound ending...");
+        $server->broadcastMessage("§fRound §9" . $currentRound . "§fending...");
 
         // TODO: Determine round winners (from bracket results)
         // TODO: Advance winners to next round
@@ -115,7 +115,7 @@ class TournamentTickTask extends Task {
         $participants = $this->tournamentManager->getParticipants();
         $remainingPlayers = count($participants);
 
-        $message = "§6[TOURNAMENT] §fRound $currentRound — §e$remainingPlayers §fplayers remaining";
+        $message = "§6[TOURNAMENT] §fRound §9" . $currentRound . "§f — §e" . $remainingPlayers . "§f players remaining";
         $server->broadcastMessage($message);
     }
 }

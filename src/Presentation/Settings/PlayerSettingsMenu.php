@@ -27,8 +27,8 @@ use Domain\Player\PlayerProfile;
 final class PlayerSettingsMenu {
 
     // Kolory toogleów
-    private const ON  = '§a✔ §f';
-    private const OFF = '§c✘ §f';
+    private const ON  = '§aON §f';
+    private const OFF = '§cOFF §f';
 
     /**
      * Otwiera główne menu ustawień dla gracza.
@@ -38,15 +38,15 @@ final class PlayerSettingsMenu {
         SessionManager $sessionManager,
     ): void {
         $uuid    = $player->getUniqueId()->toString();
-        $profile = $sessionManager->getProfile($uuid);
+        $profile = $sessionManager->getSessionByUuid($uuid);
 
         if ($profile === null) {
-            $player->sendMessage('§cProfil nie jest jeszcze załadowany. Poczekaj chwilę.');
+            $player->sendMessage('§cProfil is not loaded yet. Wait a moment.');
             return;
         }
 
-        $duelsLabel      = ($profile->isAcceptingDuels()     ? self::ON : self::OFF) . 'Przyjmuj wyzwania na duel';
-        $spectatorLabel  = ($profile->isSpectatorEnabled()   ? self::ON : self::OFF) . 'Zezwól na spectowanie twoich meczów';
+        $duelsLabel      = ($profile->isAcceptingDuels()     ? self::ON : self::OFF) . 'Accept duels';
+        $spectatorLabel  = ($profile->isSpectatorEnabled()   ? self::ON : self::OFF) . 'Allow spectators';
 
         $form = new class($profile, $sessionManager, $player) implements Form {
 
@@ -57,8 +57,8 @@ final class PlayerSettingsMenu {
             ) {}
 
             public function jsonSerialize(): mixed {
-                $duelsLabel     = ($this->profile->isAcceptingDuels()   ? '§a✔ §f' : '§c✘ §f') . 'Przyjmuj wyzwania na duel';
-                $spectatorLabel = ($this->profile->isSpectatorEnabled() ? '§a✔ §f' : '§c✘ §f') . 'Zezwól na spectowanie twoich meczów';
+                $duelsLabel     = ($this->profile->isAcceptingDuels()   ? '§aON §f' : '§cOFF §f') . 'Accept duels';
+                $spectatorLabel = ($this->profile->isSpectatorEnabled() ? '§aON §f' : '§cOFF §f') . 'Allow spectators';
 
                 return [
                     'type'    => 'form',
@@ -75,7 +75,7 @@ final class PlayerSettingsMenu {
             public function handleResponse(Player $player, mixed $data): void {
                 if ($data === null) return; // zamknięto bez klikania
 
-                $profile = $this->sessionManager->getProfile($player->getUniqueId()->toString());
+                $profile = $this->sessionManager->getSessionByUuid($player->getUniqueId()->toString());
                 if ($profile === null) return;
 
                 match ((int) $data) {
@@ -93,15 +93,15 @@ final class PlayerSettingsMenu {
             private static function toggleDuels(Player $player, PlayerProfile $profile): void {
                 $newValue = !$profile->isAcceptingDuels();
                 $profile->setAcceptingDuels($newValue);
-                $status = $newValue ? '§awłączone' : '§cwłączone';
-                $player->sendMessage("§b⚙ §fWyzwania na duel: {$status}");
+                $status = $newValue ? '§aON' : '§cOFF';
+                $player->sendMessage("§fAccept duels: §9{$status}");
             }
 
             private static function toggleSpectator(Player $player, PlayerProfile $profile): void {
                 $newValue = !$profile->isSpectatorEnabled();
                 $profile->setSpectatorEnabled($newValue);
-                $status = $newValue ? '§azezwolone' : '§czablokowane';
-                $player->sendMessage("§b⚙ §fSpectowanie twoich meczów: {$status}");
+                $status = $newValue ? '§aON' : '§cOFF';
+                $player->sendMessage("§fAllow spectators: §9{$status}");
             }
         };
 

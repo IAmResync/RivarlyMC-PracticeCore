@@ -85,11 +85,10 @@ class ScoreboardManager {
 
             // Statystyki pobierane w czasie meczu (HP przeciwnika , czas meczu, zabójstwa).
             $lines[] = "--------------------";
-            $lines[] = "⏱️ Time: " . $matchTimeFormatted;
-            $lines[] = "👤 Opponent: " . $opponentName;
-            $lines[] = "❤️ Opponent HP: " . $oponnentHp . "%";
-            $lines[] = "⚔️ Kills: " . $kills;
-            $lines[] = "--------------------";
+            $lines[] = "§fTime: §9" . $matchTimeFormatted;
+            $lines[] = "§fOpponent: §9" . $opponentName;
+            $lines[] = "§fOpponent HP: §9" . $oponnentHp . "%";
+            $lines[] = "§fKills: §9" . $kills;
         } else {
             $profile = $this->profileCache[$uuid] ?? null;
 
@@ -103,13 +102,12 @@ class ScoreboardManager {
 
             // Domyślne statystyki wyświetlane w lobby głównym serwera
             $lines[] = "--------------------";
-            $lines[] = "📊 Global ELO: " . $elo;
-            $lines[] = " Division: " . $division;
-            $lines[] = "📈 Win Rate: " . $winRate . "%";
-            $lines[] = "⚔️ Global Kills" . $globalkills;
+            $lines[] = "§fGlobal ELO: §9" . $elo;
+            $lines[] = "§fDivision: §9" . $division;
+            $lines[] = "§fWin Rate: §9" . $winRate . "%";
+            $lines[] = "§fGlobal Kills: §9" . $globalkills;
             $lines[] = "";
-            $lines[] = "👥 Online:" . count($player->getServer()->getOnlinePlayers());
-            $lines[] = "--------------------";
+            $lines[] = "§fOnline: §9" . count($player->getServer()->getOnlinePlayers());
         }
 
         // Przekazujemy gotowe linie tekstu bezpośrednio do wysyłania przez renderer.

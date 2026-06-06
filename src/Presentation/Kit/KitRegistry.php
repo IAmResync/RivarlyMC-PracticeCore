@@ -48,8 +48,8 @@ final class KitRegistry {
 
         if (!isset($this->kits[$lowercaseMode])) {
             throw new InvalidArgumentException(
-                "Brak zarejestrowanego zestawu (kitu) dla trybu gry '{$gameMode}'. " .
-                "Dostępne: " . implode(', ', array_keys($this->kits))
+                "No registered kit for game mode '{$gameMode}'. " .
+                "Available: " . implode(', ', array_keys($this->kits))
             );
         }
 

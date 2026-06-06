@@ -97,8 +97,8 @@ class QueueTickTask extends Task {
                 }
 
                 // Send match start messages
-                $playerA->sendMessage("§a✓ §fMatch found! Opponent: §b{$pair->playerBName} §7(ELO: §f{$pair->playerBElo}§7)");
-                $playerB->sendMessage("§a✓ §fMatch found! Opponent: §b{$pair->playerAName} §7(ELO: §f{$pair->playerAElo}§7)");
+                $playerA->sendMessage("§fMatch found! Opponent: §b{$pair->playerBName} §7(ELO: §f{$pair->playerBElo}§7)");
+                $playerB->sendMessage("§fMatch found! Opponent: §b{$pair->playerAName} §7(ELO: §f{$pair->playerAElo}§7)");
 
                 // TODO: Teleport players to arena and initialize arena
                 // For now, just send messages

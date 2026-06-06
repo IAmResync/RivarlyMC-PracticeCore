@@ -7,7 +7,7 @@
 
 ## ✅ = Complete | ❌ = To Do
 
----
+
 
 ## 🧠 PHASE 1 – Domain (Foundation, zero PMMP)
 > Pure PHP, no dependencies. Must be first.

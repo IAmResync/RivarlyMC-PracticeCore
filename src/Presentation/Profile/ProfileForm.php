@@ -39,15 +39,18 @@ final class ProfileForm {
 
         $divisionColor = self::getDivisionColor($division);
 
-        $content  = "§7━━━━━━━━━━━━━━━━━━━━\n";
-        $content .= "§fPlayer: §9{$player->getName()}\n";
-        $content .= "  Division: {$divisionColor}{$division}\n";
-        $content .= "  ELO: §e{$elo} pts\n";
-        $content .= "§7━━━━━━━━━━━━━━━━━━━━\n";
-        $content .= "§f   Wins: §a{$wins}   §f Losses: §c{$losses}\n";
-        $content .= "  Total matches: §f{$matches}   Win Rate: §e{$winRate}%\n";
-        $content .= "  Kills: §a{$kills}   Deaths: §c{$deaths}   KDR: §e{$kdr}\n";
-        $content .= "§7━━━━━━━━━━━━━━━━━━━━";
+        $content = implode("\n", [
+        "PLAYER={$player->getName()}",
+        "DIVISION={$division}",
+        "ELO={$elo}",
+        "WINS={$wins}",
+        "LOSSES={$losses}",
+        "MATCHES={$matches}",
+        "KILLS={$kills}",
+        "DEATHS={$deaths}",
+        "KDR={$kdr}",
+        "WINRATE={$winRate}"
+        ]);
 
         $form = new class($profile, $sessionManager, $content) implements Form {
 
@@ -60,12 +63,12 @@ final class ProfileForm {
             public function jsonSerialize(): mixed {
                 return [
                     'type'    => 'form',
-                    'title'   => 'profile:§9§lYour Profile',
+                    'title'   => 'Your Profile',
                     'content' => $this->content,
                     'buttons' => [
-                        ['text' => "§fDetailed Statistics"],
-                        ['text' => "§9Settings"],
-                        ['text' => "§cClose"],
+                        ['text' => 'Detailed Statistics'],
+                        ['text' => 'Settings'],
+                        ['text' => 'Close'],
                     ],
                 ];
             }
